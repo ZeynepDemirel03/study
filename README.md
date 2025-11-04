@@ -1,1 +1,2 @@
-# study
+# study 
+Here i study rust. 
