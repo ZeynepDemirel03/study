@@ -47,20 +47,22 @@ impl Animal {
             mood: Mood::Sleepy,
         }   
     }
-    fn check_type(&self) {
+    /*fn check_type(&self) {
         match self.animal_type {
             AnimalType::Dog => println!("The animal is a dog"),
             AnimalType::Cat => println!("The animal is a cat"),
         }
     }
-/*
-fn check_type(Animal { animal_type, .. }: &Self) {
+    */
+    fn check_type(&self) {
+    let Animal { animal_type, .. } = self;
     match animal_type {
         AnimalType::Dog => println!("The animal is a dog"),
         AnimalType::Cat => println!("The animal is a cat"),
     }
 }
- */
+
+ 
     fn change_to_dog(&mut self) {
         self.animal_type = AnimalType::Dog;
         println!("Changed animal to dog! Now it's {self:?}");
