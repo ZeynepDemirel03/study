@@ -74,10 +74,31 @@ impl Animal {
 }
 
 
+//printing name with destructing
+#[derive(Debug)]
+struct Person{
+    name : String,
+    surname: String,
+    age : i32,
+}
+
+fn print_name(Person { name , surname , ..}: &Person){
+    println!("name is {} ,  surname is {}" ,name , surname);
+}
+
 fn main (){
     let mut cat = Animal::new_with_age(3, AnimalType::Cat);
     let  mut dog = Animal::new_with_age(7, AnimalType::Dog);
     cat.check_type();
     cat.show_mmod();
-    println!("this is an {:?}" , cat)
+    println!("this is an {:?}" , cat);
+
+    //printing name with destructing
+    let alice = Person{
+        name : "Alice".to_string(),
+        surname: "Smith".to_string(),
+        age: 25,
+    };
+
+    print_name(&alice);
 }
