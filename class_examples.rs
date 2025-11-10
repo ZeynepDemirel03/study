@@ -1,57 +1,6 @@
-/*By using the learned concepts, write a function with a proper signature that ...
- ... calculates the absolute value of a number.
- ... enforces a number to be in a given range.
- ... determines the maximum of three numbers.
- ... determines the amount of days for a given month.
- ... prints the grade for this course based on four test results.
- ... prints the body mass index category for a given weight and height.
- ... calculates the factorial of a given number (advanced) */
 
-/* By using the learned concepts, write a function with a proper signature that ...
- ... mutates a number by adding another number n.
- ... concatenates two strings.
- ... swaps the values of two variables.
- ... returns a nicely formatted string congratulation for a given birthday.
- ... repeats a string n times, thus producing a new string (advanced).
- ... reverses the digits of a positive integer (advanced) */
 
- /* By using the learned concepts, write a function with a proper signature that ...
- ... finds the minimum and the sum of a collection of numbers.
- ... prints the body mass index category (2nd exercise) using pattern matching.
- ... returns the longest prefix of a collection having numbers smaller than n.
- ... returns all prime numbers up to a given number n.
- ... sorts a collection of people with names and ages by name.
- ... prints a collection of heroes with names and health points in a nice way by
- visualizing them below each other with their health points as health bars.
- ... plans the ultimate heist in preparation for GTA VI, picking the best
- combination of items to put into a bag of capacity k, where each item has
- some value v and some weight w (advanced) */
-
- /*By using the learned concepts, write types/functions/methods that ...
- ... calculate the area and circumference of a graphical object, which can
- either be a rectangle, a right triangle with sides of equal length, or a circle.
- ... visualize such a graphical object using print statements.
- ... stepwise build and manipulate a Sudoku board.
- ... visualize such a Sudoku board using print statements.
- ... improve the solutions from last time in terms of readability, reliability, etc.
- ... solve a Sudoku board (advanced). */
-
-/*By using the learned concepts, write a function with a proper signature that ...
-• ... finds the minimum of two values in a tuple.
-• ... sums up a collection of optional numeric values.
-• ... finds the maximum of a collection of elements having any type.
-• ... finds an element in a collection of any type and returns its index.
-• ... sorts a collection of elements having any type (swap method is allowed).
-• ... joins elements of any type into a string using a given delimiter.
-• ... evaluates an arithmetic expression (numbers, addition, subtraction) given
-as string and returns different kinds of errors on incorrect inputs (advanced). */
-
-/* 1-Write a function that finds the maximum and the sum of a collection of numbers.
-2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
-3-Write a function that rotates a collection of string literals n times to the left. 
-Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, 
-where the leftmost element becomes the last element.
-4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String. */
+use std::ops::AddAssign;
 
 
 
@@ -209,23 +158,43 @@ fn reversing_digits(mut n : u32)-> u32{
 
 }
 
+#[derive(Debug)]
+enum CalculationError {
+    EmptyList,
+    InvalidInput
+}
 
-//finds the minimum and the sum of a collection of numbers.
-fn find_min_and_sum(list: &[i32])-> (i32, &str){
-    if list.len() == 0 {
-        return (0, "The length of the input is zero."); // error handling
-    }else {
-       let  mut min = list[0];
-
-        for i in 1..list.len(){
-            if list[i] < min {
-                min = list[i];
-            }
-        }
-        return (min , "is the minimum");
+//finds the minimum and the sum of a collection of numbers. (updated)
+fn find_min(list: &[i32]) -> Result<i32, CalculationError> {
+    if list.is_empty() {
+        return Err(CalculationError::EmptyList);
     }
 
+    let mut min = list[0];
+
+    for &val in list {
+        if val < min {
+            min = val;
+        }
+        
+    }
+
+    Ok(min)
 }
+
+fn find_sum(liste: &[i32]) -> Result<i32, CalculationError> {
+    if liste.is_empty() {
+        return Err(CalculationError::EmptyList);
+    }
+
+    let mut sum = 0;
+
+    for l in liste {
+        sum+=l
+    }
+    Ok(sum)
+}
+
 
 
 //prints the body mass index category (2nd exercise) using pattern matching. 
@@ -288,6 +257,185 @@ fn primes_up_to(x: u32) -> Vec<u32> { //copied from bali
 }
 
 
+
+//sorts a collection of people with names and ages by name.
+fn sort_ppl(ppl:&mut  Vec<(&str,i32)>){
+    let n = ppl.len();
+
+    for k in 0..n{
+        for i in 0..n-k-1{
+            if ppl[i].0>ppl[i+1].0{
+                let temp = ppl[i];
+                ppl[i] = ppl[i+1];
+                ppl[i+1]= temp;
+            }
+        }
+    }
+}
+
+
+//prints a collection of heroes with names and health points in a nice way by visualizing them below each other with their health points as health bars.
+#[derive(Debug)]
+
+struct Hero{
+    name: String,
+    health: u32
+}
+
+impl Hero{
+    fn make_bar(&self){
+        let mut i = 0;
+
+        while i < self.health {
+            print!("█");
+            i += 1;
+        }
+        println!(); 
+    }
+
+    fn display(&self){
+        print!("{}:" , self.name);
+        self.make_bar();
+    }
+}
+
+
+//calculate the area and circumference of a graphical object, which can either be a rectangle, a right triangle with sides of equal length, or a circle.
+
+#[derive(Debug)]
+
+    
+    struct Rectangle{
+        width: u32,
+        height: u32,
+    }
+    impl Rectangle{
+        fn visualize(&self){
+            let mut i = 0; 
+            while i < self.height {
+                let mut j = 0; 
+                while j < self.width{
+                    print!("█");
+                    j += 1;
+                } 
+                println!();
+                i +=1;
+            }
+        }
+
+        fn area(&self)->u32{
+            self.height*self.width
+        }
+
+        fn circumference(&self)->u32{
+            2*(self.height+self.width)
+        }
+    }
+
+
+
+//stepwise build and manipulate a Sudoku board.
+
+
+    
+//visualize such a Sudoku board using print statements.
+
+
+
+
+
+//finds the minimum of two values in a tuple.
+
+fn min_of_two_in_tup<T: PartialOrd + Copy>(value: Option<(T, T)>)-> Result<T, CalculationError>{
+    
+    match value {
+        Some((a,b)) => {
+            if a<b {
+                Ok(a)
+            } else {
+                Ok(b)
+            }
+        }
+        None => Err(CalculationError::EmptyList)
+    }
+}
+
+//finds the maximum of a collection of elements having any type.
+
+fn max_of_coll<T: PartialOrd + Copy>(coll: &[T])->  Result<T, CalculationError>{
+
+    if coll.is_empty() {
+        return Err(CalculationError::EmptyList);
+    }
+
+    let mut max_val = coll[0];
+
+    for i in 1..coll.len(){
+        if coll[i] > max_val {
+            max_val = coll[i]
+        }
+    }
+ Ok(max_val)
+}
+
+
+//sums up a collection of optional numeric values
+
+fn sum_of_opt_num< T: AddAssign + Copy>(listy: &[Option<T>])-> Option<T>{
+
+    todo!()
+    //i couldnt do it.
+
+}
+
+
+//finds an element in a collection of any type and returns its index.
+
+fn return_index(){
+todo!()
+}
+
+
+//sorts a collection of elements having any type (swap method is allowed).
+
+fn swap_sort_col(){
+todo!()
+}
+
+
+//joins elements of any type into a string using a given delimiter.
+
+fn join_delimeter(){
+    todo!()
+}
+
+//1-Write a function that finds the maximum and the sum of a collection of numbers.
+
+fn find_min1(){
+    todo!()
+}
+
+fn find_sum1(){
+todo!()
+}
+
+//2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
+fn return_prefix(){
+todo!()
+}
+
+
+//3-Write a function that rotates a collection of string literals n times to the left. Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, where the leftmost element becomes the last element.
+fn rotates_str(){
+todo!()
+}
+
+
+//4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String.
+fn converts_str_num(){
+todo!()
+}
+
 fn main(){
     //calculates the absolute value of a number.
     println!(" absolute value of the number is: {}",abs_val(-10));
@@ -340,7 +488,16 @@ fn main(){
 
 
     //finds the minimum and the sum of a collection of numbers. 
-    
+    let my_list = vec![1,2,3,4,5];
+    match find_min(&my_list) {
+        Ok(min)=> println!("this is the min of the list: {min}"),
+        Err(e) => println!("Error: {:?}", e),
+    }
+
+    match find_sum(&my_list){
+        Ok(sum)=> println!("this is the sum of the list: {sum}"),
+        Err(e) => println!("Error: {:?}", e),
+    }
 
 
     //prints the body mass index category (2nd exercise) using pattern matching. 
@@ -360,23 +517,44 @@ fn main(){
 
 
     //sorts a collection of people with names and ages by name.
+    let mut ppl = vec![ ("ali", 20), ("zeynep", 19), ("veli", 21)];
+    println!("before sorting: {ppl:?}");
+    sort_ppl(&mut  ppl);
+    println!("after sorting: {ppl:?}");
 
 
 
     //prints a collection of heroes with names and health points in a nice way by visualizing them below each other with their health points as health bars.
-
+    let heroes = [
+        Hero {name: "this".to_string() , health: 3},
+        Hero {name: "one".to_string() , health: 3},
+        Hero {name: "is".to_string() , health: 3},
+        Hero {name: "for".to_string() , health: 15},
+        Hero {name: "you".to_string() , health: 3},
+        Hero {name: "bali".to_string() , health: 3},
+    ];
+    
+    let mut i = 0;
+    while i< heroes.len(){
+        heroes[i].display();
+        i+=1;
+    }
 
 
  
     //calculate the area and circumference of a graphical object, which can either be a rectangle, a right triangle with sides of equal length, or a circle.
-
-
-
     //visualize such a graphical object using print statements.
+    
+    let my_rectangle = Rectangle{width: 3, height:5};
+    println!("rectangle:");
+    my_rectangle.visualize();
+    println!("Area: {}", my_rectangle.area());
+    println!("Circumference: {}", my_rectangle.circumference());
 
 
 
     //stepwise build and manipulate a Sudoku board.
+
 
 
     
@@ -384,17 +562,32 @@ fn main(){
 
 
 
-    //improve the solutions from last time in terms of readability, reliability, etc.
 
+    //finds the minimum of two values in a tuple.
+    
+    let result1 = min_of_two_in_tup(Some((10, 2)));
+    println!("{:?}", result1); 
 
-
-
-    //finds the minimum of two values in a tuple. (option and result exapmles)
-
+    let result2: Result<i32, CalculationError> = min_of_two_in_tup(None);
+    println!("{:?}", result2);
 
 
     //finds the maximum of a collection of elements having any type.
+    let sol1 = vec![1,2,3];
+    
+    match max_of_coll(&sol1) {
+        Ok(o)=> println!("max is : {o}"),
+        Err(e)=> println!("error : {e:?}")
+    }
 
+    let sol2= vec!["a", "b"];
+    match max_of_coll(&sol2){
+        Ok(o)=> println!("max is : {o}"),
+        Err(e)=> println!("error : {e:?}")
+    }
+
+    //sums up a collection of optional numeric values
+    //meh
 
 
     //finds an element in a collection of any type and returns its index.
@@ -409,23 +602,19 @@ fn main(){
 
 
 
-    //evaluates an arithmetic expression (numbers, addition, subtraction) given as string and returns different kinds of errors on incorrect inputs (advanced)
-
-
-
     //1-Write a function that finds the maximum and the sum of a collection of numbers.
 
 
 
-    //2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
+   //2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
 
 
 
-    //3-Write a function that rotates a collection of string literals n times to the left. Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, where the leftmost element becomes the last element.
+   //3-Write a function that rotates a collection of string literals n times to the left. Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, where the leftmost element becomes the last element.
 
 
 
-    //4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String.
+   //4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String. 
 
 
 
