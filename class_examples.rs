@@ -161,7 +161,8 @@ fn reversing_digits(mut n : u32)-> u32{
 #[derive(Debug)]
 enum CalculationError {
     EmptyList,
-    InvalidInput
+    InvalidInput,
+    CantCompare
 }
 
 //finds the minimum and the sum of a collection of numbers. (updated)
@@ -335,11 +336,11 @@ impl Hero{
 
 
 //stepwise build and manipulate a Sudoku board.
-
+//this shit is hard
 
     
 //visualize such a Sudoku board using print statements.
-
+//haha no
 
 
 
@@ -350,10 +351,12 @@ fn min_of_two_in_tup<T: PartialOrd + Copy>(value: Option<(T, T)>)-> Result<T, Ca
     
     match value {
         Some((a,b)) => {
-            if a<b {
-                Ok(a)
-            } else {
+            if a==b {
+                Err(CalculationError::CantCompare)
+            } else if  b < a{
                 Ok(b)
+            } else {
+                Ok(a)
             }
         }
         None => Err(CalculationError::EmptyList)
@@ -391,50 +394,134 @@ fn sum_of_opt_num< T: AddAssign + Copy>(listy: &[Option<T>])-> Option<T>{
 
 //finds an element in a collection of any type and returns its index.
 
-fn return_index(){
-todo!()
+fn return_index<T: PartialEq>(list: &[T] , target: &T)-> Option<usize>{
+    let mut index = 0;
+    
+    while index < list.len(){
+        if &list[index] == target {
+            return Some(index);
+        }
+        index+=1;
+    }
+    None
 }
 
 
 //sorts a collection of elements having any type (swap method is allowed).
 
-fn swap_sort_col(){
-todo!()
+fn sort<T: PartialOrd>(list: &mut [T])-> Result<(), CalculationError> {
+   
+    if list.is_empty() {
+        return Err(CalculationError::EmptyList)
+    }
+
+   let len = list.len();
+
+   for i in 0..len{
+       for j in 0..len-i-1{
+           if list[j] > list[j+1] {
+               list.swap(j,j+1)
+           }
+       }
+   }
+   Ok(())
 }
 
 
+use std::fmt::Display;
 //joins elements of any type into a string using a given delimiter.
+fn join_elements<T: Display, U: Display>(array: &[T], delimeter: U) -> Option<String> {
+    
+    if array.is_empty(){
+        return None;
+    } 
+    
+    let mut my_list = String::new();
+    let len = array.len();
+    
+    for i in 0..len {
+        my_list.push_str(&format!("{}", array[i]));
+        if  len-1 > i {
+                my_list.push_str(&format!("{}", delimeter));
+        }
 
-fn join_delimeter(){
-    todo!()
+    }
+    
+    
+    
+    Some(my_list) 
 }
 
+#[derive(Debug)]
 //1-Write a function that finds the maximum and the sum of a collection of numbers.
-
-fn find_min1(){
-    todo!()
+enum Error{
+    EmptyList
 }
 
-fn find_sum1(){
-todo!()
+fn find_max<T: PartialOrd+ Clone>(list:&[T])-> Result< T, Error>{
+    
+    if list.is_empty(){
+        return Err(Error::EmptyList);
+    }
+    let mut max_val= list[0].clone();
+    
+    for i in 1..list.len() {
+        if max_val < list[i] {
+            max_val = list[i].clone();
+        } 
+    }
+    Ok(max_val)
+}
+fn find_sum<T:AddAssign+ Clone>(list:&[T])-> Result< T, Error>{
+    if list.is_empty(){
+        return Err(Error::EmptyList);
+    }
+    let mut sum = list[0].clone();
+    
+    for i in 1..list.len(){
+        sum += list[i].clone();
+    }
+    Ok(sum)
 }
 
 //2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
-fn return_prefix(){
-todo!()
+
+fn prefix<T: std::fmt::Debug>(list:&[T])->Vec<&[T]>{
+    
+    let mut vector = Vec::new();
+    for i in 0..list.len(){
+        println!("{:?}", &list[0..=i]); 
+        vector.push(&list[0..=i]);
+    } 
+    vector
 }
-
-
-//3-Write a function that rotates a collection of string literals n times to the left. Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, where the leftmost element becomes the last element.
-fn rotates_str(){
-todo!()
+    //3-Write a function that rotates a collection of string literals n times to the left. 
+    //Rotating a collection one time to the left means that every element of the collection 
+    //is moved one place (index) to the left, where the leftmost element becomes the last element.,
+fn rotate<T: Clone>(list:&[T], count:u32)-> Option<Vec<T>>{
+    
+    if list.is_empty(){
+        return None;
+    }
+    
+    let mut new_vec = Vec::new();
+    
+    for j in 0..list.len(){
+    new_vec.push(list[j].clone());
+    }
+    for s in 0..count{
+        let save = new_vec[0].clone(); 
+        let last_element = new_vec.len()-1;
+    
+        for i in 0..last_element
+    {new_vec[i] = new_vec[i+1].clone()}
+    new_vec[last_element] = save;
+    }
+    
+    Some(new_vec)
 }
+    //4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String. 
 
-
-//4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String.
-fn converts_str_num(){
-todo!()
-}
 
 fn main(){
     //calculates the absolute value of a number.
@@ -553,16 +640,6 @@ fn main(){
 
 
 
-    //stepwise build and manipulate a Sudoku board.
-
-
-
-    
-    //visualize such a Sudoku board using print statements.
-
-
-
-
     //finds the minimum of two values in a tuple.
     
     let result1 = min_of_two_in_tup(Some((10, 2)));
@@ -576,45 +653,71 @@ fn main(){
     let sol1 = vec![1,2,3];
     
     match max_of_coll(&sol1) {
-        Ok(o)=> println!("max is : {o}"),
+        Ok(o)=> println!("max is : {o:?}"),
         Err(e)=> println!("error : {e:?}")
     }
 
     let sol2= vec!["a", "b"];
     match max_of_coll(&sol2){
-        Ok(o)=> println!("max is : {o}"),
+        Ok(o)=> println!("max is : {o:?}"),
         Err(e)=> println!("error : {e:?}")
     }
 
-    //sums up a collection of optional numeric values
-    //meh
+    //sums up a collection of optional numeric values 
+    //meh 
 
 
     //finds an element in a collection of any type and returns its index.
-
-
+    
+    let numbers = [1,2,3,4,5];
+    let result1= return_index(&numbers, &2);
+    println!("index: {:?}", result1);
 
     //sorts a collection of elements having any type (swap method is allowed).
+    let mut a = vec![58,68,4,5];
+    
+    match sort(&mut a) {
+        Ok(_)=> println!("sorted : {a:?}"),
+        Err(e)=> println!("error : {e:?}")
+    }
 
+    let mut a2: Vec<i32>= vec![];
+    match sort(&mut a2){
+        Ok(_)=> println!("sorted : {a2:?}"),
+        Err(e)=> println!("error : {e:?}")
+    }
 
 
     //joins elements of any type into a string using a given delimiter.
-
+    let my_list = ["1","2","3"];
+    let bla = "-";
+    println!("{:?}", join_elements(&my_list,bla));
 
 
     //1-Write a function that finds the maximum and the sum of a collection of numbers.
-
-
-
-   //2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
-
-
-
-   //3-Write a function that rotates a collection of string literals n times to the left. Rotating a collection one time to the left means that every element of the collection is moved one place (index) to the left, where the leftmost element becomes the last element.
-
-
-
-   //4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String. 
+    let my_list = [1,2,3,4,5];
+    match find_max(&my_list){
+        Ok(o)=> println!("this is the max: {o:?}"),
+        Err(e)=> println!("an error has occured. : {e:?}"),
+    }
+    let my_list2 = [1,2,3,4,5];
+    match find_sum(&my_list2){
+        Ok(o)=> println!("this is the sum: {o:?}"),
+        Err(e)=> println!("an error has occured. : {e:?}"),
+    }
+    //2-Write a function that returns all prefixes of a collection (pick any type for the elements within the collection).
+    let vector1 = vec![1,2,3];
+    println!("{:?}", prefix(&vector1));
+    
+    //3-Write a function that rotates a collection of string literals n times to the left. 
+    //Rotating a collection one time to the left means that every element of the collection 
+    //is moved one place (index) to the left, where the leftmost element becomes the last element.
+    let  vector2 = vec![76,45,433,2]; 
+    let count = 2;
+    println!("{:?}", rotate(&vector2, count));
+    
+    //4-Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String. 
+     
 
 
 
