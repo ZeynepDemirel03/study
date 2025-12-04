@@ -24,6 +24,8 @@ fn main(){
     let dizi = ["a","b","c","d"];
 
     println!("{:?}", rotates(&dizi,1));
+
+    println!("{}", converts("".to_string()))
 }
 
 fn max(list:&[i32])->(i32, &str){
@@ -105,6 +107,22 @@ fn rotates(list:&[&str],n:usize)->Vec<String>{
 
 }
 
-fn converts(a:String)->i32{
-todo!();
+// Write a function that converts a String of digits into a number. Tolerate whitespaces at the beginning and the end of the String.
+
+fn converts(a:String)->usize{
+
+    let mut number = 0;
+
+    for ch in a.chars(){
+
+        if ch == ' '{
+            continue;
+        }
+        
+        if ch >= '0' && ch <= '9' {
+            let digit = (ch as u8 - b'0') as usize;
+            number = number *10 +digit;
+        }
+    }
+    number
 }
